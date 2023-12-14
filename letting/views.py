@@ -20,8 +20,8 @@ def letting(request, letting_id):
     }
     return render(request, 'letting.html', context)
 
-def custom_404(request, exception):
-    return render(request, '404.html', {'exception': exception}, status=404)
+def custom_404(request, *args, **kwargs):
+    return render(request, '404.html', status=404)
 
 def erreur_404(request):
     raise Http404("Cette page n'existe pas")

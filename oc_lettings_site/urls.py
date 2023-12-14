@@ -16,7 +16,8 @@ urlpatterns = [
     path('profiles/<str:username>/', profiles.views.profile, name='profile'),
     path('admin/', admin.site.urls),
     path('sentry-debug/', trigger_error),
-    path('error_404/', letting.views.erreur_404)
+    path('custom_404/', letting.views.custom_404, name='custom_404'),
+    path('error_500/', letting.views.custom_500, name='custom_500')
 ]
 
 handler404 = letting.views.custom_404
