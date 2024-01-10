@@ -287,11 +287,11 @@ sup {
 }
 
 a {
-  color: #a22b02;
+  color: blue;
   text-decoration: none;
 }
 a:hover {
-  color: navy;
+  color: #6e241a;
   text-decoration: underline;
 }
 
