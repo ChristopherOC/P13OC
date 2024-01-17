@@ -1,0 +1,77 @@
+version: 2.1
+orbs:
+  python: circleci/python@2.0.3
+  heroku: circleci/heroku@1.2.6
+
+jobs:
+  build_and_test: # this can be any name you choose
+    docker:
+        - image: cimg/python:3.12.0
+
+
+    steps:
+      - checkout
+      - python/install-packages:
+          pkg-manager: pip
+      - run:
+          name: Run tests
+          command: python -m pytest
+      - persist_to_workspace:
+          root: ~/project
+          paths:
+            - .
+
+    build-and-push-docker-image:
+      docker:
+        - image: cimg/python:3.9.6
+      steps:
+        - checkout
+        - setup_remote_docker:
+            docker_layer_caching: true
+        - run:
+            name: build and push docker image
+            command: |
+              $TAG=0.1.$CIRCLE_BUILD_NUM
+              docker build -t $DOCKER_USERNAME/$IMAGE_NAME:$TAG --build-arg SECRET_KEY=${SECRET_KEY} --build-arg DSN=${DSN} .
+              #docker build -t $DOCKER_USERNAME/$IMAGE_NAME:$TAG .
+              echo $DOCKER_PASSWORD | docker login -u $DOCKER_USERNAME --password-stdin
+              docker push $DOCKER_USERNAME/$IMAGE_NAME:$TAG
+
+  deploy: # this can be any name you choose
+    docker:
+      - image: cimg/python:3.12.0
+    steps:
+      - checkout
+      - setup_remote_docker:
+          docker_layer_caching: true
+      - run:
+          name: Build and push Docker image to Heroku
+          command: |
+            iex ((New-Object System.Net.WebClient).DownloadString('https://cli-assets.heroku.com/install.ps1'))
+            $env:HEROKU_API_KEY=$HEROKU_TOKEN
+            heroku config:set SECRET_KEY=$env:SECRET_KEY -a $env:HEROKU_APP_NAME
+            heroku config:set DSN=$env:DSN -a $env:HEROKU_APP_NAME
+            heroku container:login
+            heroku container:push -a $env:HEROKU_APP_NAME web
+            heroku container:release -a $env:HEROKU_APP_NAME web
+
+workflows:
+  test_my_app:
+    jobs:
+      - build_and_test
+      - build-and-push-docker-image:
+          requires:
+            - build_and_test # only deploy if the build_and_test job has completed
+          filters:
+            branches:
+              only: master # only deploy when on main
+      - deploy:
+        requires:
+          - build-and-push-docker-image
+        filters:
+          branches:
+            only: master    
+              
+              
+#job de linting avant les tests
+#ruff a la place de flake8
