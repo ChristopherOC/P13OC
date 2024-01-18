@@ -3,10 +3,27 @@ orbs:
   python: circleci/python@2.0.3
   heroku: circleci/heroku@1.2.6
 
+
+
 jobs:
+  lint: # Ajout du job de linting
+    docker:
+      - image: cimg/python:3.12.0
+    steps:
+      - checkout
+      - python/install-packages:
+          pkg-manager: pip
+      - run:
+          name: Run linting
+          command: ruff
+      - persist_to_workspace:
+          root: ~/project
+          paths:
+            - .
+
   build_and_test: # this can be any name you choose
     docker:
-        - image: cimg/python:3.12.0
+      - image: cimg/python:3.12.0
 
 
     steps:
@@ -21,21 +38,21 @@ jobs:
           paths:
             - .
 
-    build-and-push-docker-image:
-      docker:
-        - image: cimg/python:3.9.6
-      steps:
-        - checkout
-        - setup_remote_docker:
-            docker_layer_caching: true
-        - run:
-            name: build and push docker image
-            command: |
-              $TAG=0.1.$CIRCLE_BUILD_NUM
-              docker build -t $DOCKER_USERNAME/$IMAGE_NAME:$TAG --build-arg SECRET_KEY=${SECRET_KEY} --build-arg DSN=${DSN} .
-              #docker build -t $DOCKER_USERNAME/$IMAGE_NAME:$TAG .
-              echo $DOCKER_PASSWORD | docker login -u $DOCKER_USERNAME --password-stdin
-              docker push $DOCKER_USERNAME/$IMAGE_NAME:$TAG
+  build-and-push-docker-image:
+    docker:
+      - image: cimg/python:3.12.0
+    steps:
+      - checkout
+      - setup_remote_docker:
+          docker_layer_caching: true
+      - run:
+          name: build and push docker image
+          command: |
+            $TAG=0.1.$CIRCLE_BUILD_NUM
+            docker build -t $DOCKER_USERNAME/$IMAGE_NAME:$TAG --build-arg SECRET_KEY=${SECRET_KEY} --build-arg DSN=${DSN} .
+            #docker build -t $DOCKER_USERNAME/$IMAGE_NAME:$TAG .
+            echo $DOCKER_PASSWORD | docker login -u $DOCKER_USERNAME --password-stdin
+            docker push $DOCKER_USERNAME/$IMAGE_NAME:$TAG
 
   deploy: # this can be any name you choose
     docker:
@@ -58,6 +75,7 @@ jobs:
 workflows:
   test_my_app:
     jobs:
+      - lint
       - build_and_test
       - build-and-push-docker-image:
           requires:
