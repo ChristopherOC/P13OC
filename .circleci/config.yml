@@ -15,7 +15,7 @@ jobs:
           pkg-manager: pip
       - run:
           name: Run linting
-          command: ruff check
+          command: ruff check .
       - persist_to_workspace:
           root: ~/project
           paths:
@@ -31,8 +31,10 @@ jobs:
       - python/install-packages:
           pkg-manager: pip
       - run:
-          name: Run tests
+          name: Collect static
           command: python manage.py collectstatic
+      - run:
+          name: Run tests
           command: python -m pytest
       - persist_to_workspace:
           root: ~/project
