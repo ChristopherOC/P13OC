@@ -32,7 +32,7 @@ jobs:
           pkg-manager: pip
       - run:
           name: Collect static
-          command: python manage.py collectstatic
+          command: python manage.py collectstatic --noinput
       - run:
           name: Run tests
           command: python -m pytest
