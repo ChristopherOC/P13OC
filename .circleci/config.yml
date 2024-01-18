@@ -84,11 +84,11 @@ workflows:
             branches:
               only: master # only deploy when on main
       - deploy:
-        requires:
-          - build-and-push-docker-image
-        filters:
-          branches:
-            only: master    
+          requires:
+            - build-and-push-docker-image
+          filters:
+            branches:
+              only: master    
               
               
 #job de linting avant les tests
