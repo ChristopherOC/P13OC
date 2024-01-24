@@ -67,11 +67,22 @@ jobs:
       - run:
           name: Build and push Docker image to Heroku
           command: |
-            TAG=0.1.$CIRCLE_BUILD_NUM
-            docker build -t $DOCKER_USERNAME/$IMAGE_NAME:$TAG --build-arg SECRET_KEY=${SECRET_KEY} --build-arg DSN=${DSN} .
-            # docker build -t $DOCKER_USERNAME/$IMAGE_NAME:$TAG .  # Utilisez cette ligne si vous n'utilisez pas d'argument de build
-            echo $DOCKER_PASSWORD | docker login -u $DOCKER_USERNAME --password-stdin
-            docker push $DOCKER_USERNAME/$IMAGE_NAME:$TAG
+            #!/bin/bash
+            if ! command -v heroku &> /dev/null; then
+            curl https://cli-assets.heroku.com/install.sh | sh
+            else
+            echo "Heroku is already installed. No operation was performed."
+            fi
+            HEROKU_API_KEY=${HEROKU_API_KEY} heroku container:login
+            HEROKU_API_KEY=${HEROKU_API_KEY} heroku apps:create $HEROKU_APP_NAME --region eu --addons=heroku-postgresql
+            HEROKU_API_KEY=${HEROKU_API_KEY} heroku config:set DJANGO_SECRET_KEY=$DJANGO_SECRET_KEY -a $HEROKU_APP_NAME
+            HEROKU_API_KEY=${HEROKU_API_KEY} heroku config:set SENTRY_DSN=$SENTRY_DSN -a $HEROKU_APP_NAME
+            HEROKU_API_KEY=${HEROKU_API_KEY} heroku config:set DEBUG=0 -a $HEROKU_APP_NAME
+            HEROKU_API_KEY=${HEROKU_API_KEY} heroku container:push -a $HEROKU_APP_NAME web
+            HEROKU_API_KEY=${HEROKU_API_KEY} heroku container:release -a $HEROKU_APP_NAME web
+            HEROKU_API_KEY=${HEROKU_API_KEY} heroku container:
+            HEROKU_API_KEY=${HEROKU_API_KEY} heroku run python manage.py migrate -a $HEROKU_APP_NAME
+            HEROKU_API_KEY=${HEROKU_API_KEY} heroku run python manage.py loaddata db_data/test.json -a $HEROKU_APP_NAME
 
 workflows:
   test_my_app:
