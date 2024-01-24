@@ -1,5 +1,5 @@
 exclude = [
   "migrations",
-  ".admin",
-  ".tests",
+  "admin.py",
+  "tests.py",
   ]
