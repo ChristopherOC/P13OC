@@ -1,3 +1,5 @@
 exclude = [
   "migrations",
+  "admin",
+  "tests",
   ]

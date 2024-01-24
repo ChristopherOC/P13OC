@@ -1,10 +1,8 @@
 import pytest
 from django.urls import reverse
-from django.http import Http404
-from django.test import RequestFactory, Client
+from django.test import Client
 from letting.models import Letting, Address
 
-from letting.views import index, lettings_index, letting, custom_404, custom_500
 
 pytestmark = pytest.mark.django_db
 @pytest.fixture
