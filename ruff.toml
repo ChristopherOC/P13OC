@@ -3,3 +3,7 @@ exclude = [
   "admin.py",
   "tests.py",
   ]
+
+[lint]
+select = ["F"]
+ignore = ["F401", "F841", "F811"]

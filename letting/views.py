@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from .models import Letting
 
-from django.http import HttpResponseNotFound, Http404
+from django.http import Http404
 
 # Create your views here.
 def index(request):
