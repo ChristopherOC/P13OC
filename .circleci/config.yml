@@ -14,13 +14,6 @@ jobs:
       - python/install-packages:
           pkg-manager: pip
       - run:
-          name: setup
-          command: |
-            python -m venv venv &&
-            source venv/bin/activate &&
-            pip install -r requirements.txt
-
-      - run:
           name: Run linting
           command: ruff check .
       - persist_to_workspace:
@@ -37,6 +30,12 @@ jobs:
       - checkout
       - python/install-packages:
           pkg-manager: pip
+      - run:
+          name: setup
+          command: |
+            python -m venv venv &&
+            source venv/bin/activate &&
+            pip install -r requirements.txt    
       - run:
           name: Collect static
           command: python manage.py collectstatic --noinput
