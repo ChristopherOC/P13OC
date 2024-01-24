@@ -30,6 +30,9 @@ jobs:
       - checkout
       - python/install-packages:
           pkg-manager: pip
+      - run: 
+        name: Install requirements
+        command: pip install requirements.txt
       - run:
           name: Collect static
           command: python manage.py collectstatic --noinput
@@ -67,22 +70,13 @@ jobs:
       - run:
           name: Build and push Docker image to Heroku
           command: |
-            #!/bin/bash
-            if ! command -v heroku &> /dev/null; then
-            curl https://cli-assets.heroku.com/install.sh | sh
-            else
-            echo "Heroku is already installed. No operation was performed."
-            fi
-            HEROKU_API_KEY=${HEROKU_API_KEY} heroku container:login
-            HEROKU_API_KEY=${HEROKU_API_KEY} heroku apps:create $HEROKU_APP_NAME --region eu --addons=heroku-postgresql
-            HEROKU_API_KEY=${HEROKU_API_KEY} heroku config:set DJANGO_SECRET_KEY=$DJANGO_SECRET_KEY -a $HEROKU_APP_NAME
-            HEROKU_API_KEY=${HEROKU_API_KEY} heroku config:set SENTRY_DSN=$SENTRY_DSN -a $HEROKU_APP_NAME
-            HEROKU_API_KEY=${HEROKU_API_KEY} heroku config:set DEBUG=0 -a $HEROKU_APP_NAME
-            HEROKU_API_KEY=${HEROKU_API_KEY} heroku container:push -a $HEROKU_APP_NAME web
-            HEROKU_API_KEY=${HEROKU_API_KEY} heroku container:release -a $HEROKU_APP_NAME web
-            HEROKU_API_KEY=${HEROKU_API_KEY} heroku container:
-            HEROKU_API_KEY=${HEROKU_API_KEY} heroku run python manage.py migrate -a $HEROKU_APP_NAME
-            HEROKU_API_KEY=${HEROKU_API_KEY} heroku run python manage.py loaddata db_data/test.json -a $HEROKU_APP_NAME
+            iex ((New-Object System.Net.WebClient).DownloadString('https://cli-assets.heroku.com/install.ps1'))
+            $env:HEROKU_API_KEY=$HEROKU_TOKEN
+            heroku config:set SECRET_KEY=$env:SECRET_KEY -a $env:HEROKU_APP_NAME
+            heroku config:set DSN=$env:DSN -a $env:HEROKU_APP_NAME
+            heroku container:login
+            heroku container:push -a $env:HEROKU_APP_NAME web
+            heroku container:release -a $env:HEROKU_APP_NAME web
 
 workflows:
   test_my_app:
