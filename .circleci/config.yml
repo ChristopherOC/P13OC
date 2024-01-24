@@ -67,13 +67,11 @@ jobs:
       - run:
           name: Build and push Docker image to Heroku
           command: |
-            iex ((New-Object System.Net.WebClient).DownloadString('https://cli-assets.heroku.com/install.ps1'))
-            $env:HEROKU_API_KEY=$HEROKU_TOKEN
-            heroku config:set SECRET_KEY=$env:SECRET_KEY -a $env:HEROKU_APP_NAME
-            heroku config:set DSN=$env:DSN -a $env:HEROKU_APP_NAME
-            heroku container:login
-            heroku container:push -a $env:HEROKU_APP_NAME web
-            heroku container:release -a $env:HEROKU_APP_NAME web
+            TAG=0.1.$CIRCLE_BUILD_NUM
+            docker build -t $DOCKER_USERNAME/$IMAGE_NAME:$TAG --build-arg SECRET_KEY=${SECRET_KEY} --build-arg DSN=${DSN} .
+            # docker build -t $DOCKER_USERNAME/$IMAGE_NAME:$TAG .  # Utilisez cette ligne si vous n'utilisez pas d'argument de build
+            echo $DOCKER_PASSWORD | docker login -u $DOCKER_USERNAME --password-stdin
+            docker push $DOCKER_USERNAME/$IMAGE_NAME:$TAG
 
 workflows:
   test_my_app:
