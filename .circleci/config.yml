@@ -31,8 +31,8 @@ jobs:
       - python/install-packages:
           pkg-manager: pip
       - run: 
-        name: Install requirements
-        command: pip install requirements.txt
+          name: Install requirements
+          command: pip install requirements.txt
       - run:
           name: Collect static
           command: python manage.py collectstatic --noinput
