@@ -57,12 +57,11 @@ jobs:
       - run:
           name: build and push docker image
           command: |
-            TAG=0.1.$CIRCLE_BUILD_NUM
-            IMAGE_TAG_PREFIX="myapp"
-            docker build -t $DOCKER_USERNAME/$IMAGE_NAME:$IMAGE_TAG_PREFIX$TAG --build-arg SECRET_KEY=${SECRET_KEY} --build-arg DSN=${DSN} .
-            #docker build -t $DOCKER_USERNAME/$IMAGE_NAME:$TAG .
+            
+            docker build -t $DOCKER_USERNAME/$IMAGE_NAME:test --build-arg SECRET_KEY=${SECRET_KEY} --build-arg DSN=${DSN} .
+            #docker build -t $DOCKER_USERNAME/$IMAGE_NAME:test .
             echo $DOCKER_PASSWORD | docker login -u $DOCKER_USERNAME --password-stdin
-            docker push $DOCKER_USERNAME/$IMAGE_NAME:$IMAGE_TAG_PREFIX$TAG
+            docker push $DOCKER_USERNAME/$IMAGE_NAME:$TAG
 
   deploy: # this can be any name you choose
     docker:
