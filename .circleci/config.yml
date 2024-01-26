@@ -66,7 +66,7 @@ jobs:
       - run:
           name: Build and push Docker image to Heroku
           command: |
-            iex ((New-Object System.Net.WebClient).DownloadString('https://cli-assets.heroku.com/install.ps1'))
+            
             $env:HEROKU_API_KEY=$HEROKU_TOKEN
             heroku config:set SECRET_KEY=$env:SECRET_KEY -a $env:HEROKU_APP_NAME
             heroku config:set DSN=$env:DSN -a $env:HEROKU_APP_NAME
