@@ -49,9 +49,6 @@ jobs:
       - setup_remote_docker:
           docker_layer_caching: true
       - run:
-          name : apk add docker-cli
-          command: apk add docker-cli
-      - run:
           name: setup
           command: |
             python -m venv venv &&
