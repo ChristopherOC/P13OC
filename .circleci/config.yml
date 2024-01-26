@@ -54,14 +54,7 @@ jobs:
             python -m venv venv &&
             source venv/bin/activate &&
             pip install -r requirements.txt    
-      - run:
-          name: build and push docker image
-          command: |
-            TAG=0.1.$CIRCLE_BUILD_NUM
-            docker build -t my-image:latest .
-            #docker build -t $DOCKER_USERNAME/$IMAGE_NAME:$TAG .
-            echo $DOCKER_PASSWORD | docker login -u $DOCKER_USERNAME --password-stdin
-            docker push $DOCKER_USERNAME/$IMAGE_NAME:$TAG
+
 
   deploy: # this can be any name you choose
     docker:
@@ -86,18 +79,8 @@ workflows:
     jobs:
       - lint
       - build_and_test
-      - build-and-push-docker-image:
-          requires:
-            - build_and_test # only deploy if the build_and_test job has completed
-          filters:
-            branches:
-              only: master # only deploy when on main
-      - deploy:
-          requires:
-            - build-and-push-docker-image
-          filters:
-            branches:
-              only: master    
+      - deploy
+             
               
               
 #job de linting avant les tests
