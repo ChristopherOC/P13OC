@@ -49,12 +49,24 @@ jobs:
       - setup_remote_docker:
           docker_layer_caching: true
       - run:
+          name : apk add docker-cli
+          command: apk add docker-cli
+      - run:
           name: setup
           command: |
             python -m venv venv &&
             source venv/bin/activate &&
-            pip install -r requirements.txt    
+            pip install -r requirements.txt
+            apk add docker-cli
 
+      - run:
+          name: build and push docker image
+          command: |
+            TAG=0.1.$CIRCLE_BUILD_NUM
+            docker build -t my-image:latest .
+            #docker build -t $DOCKER_USERNAME/$IMAGE_NAME:$TAG .
+            echo $DOCKER_PASSWORD | docker login -u $DOCKER_USERNAME --password-stdin
+            docker push $DOCKER_USERNAME/$IMAGE_NAME:$TAG
 
   deploy: # this can be any name you choose
     docker:
@@ -66,7 +78,6 @@ jobs:
       - run:
           name: Build and push Docker image to Heroku
           command: |
-            
             $env:HEROKU_API_KEY=$HEROKU_TOKEN
             heroku config:set SECRET_KEY=$env:SECRET_KEY -a $env:HEROKU_APP_NAME
             heroku config:set DSN=$env:DSN -a $env:HEROKU_APP_NAME
@@ -77,10 +88,20 @@ jobs:
 workflows:
   test_my_app:
     jobs:
-      - lint
-      - build_and_test
-      - deploy
-             
+      # - lint
+      # - build_and_test
+      - build-and-push-docker-image
+          # requires:
+          #   - build_and_test # only deploy if the build_and_test job has completed
+          # filters:
+          #   branches:
+          #     only: master # only deploy when on main
+      - deploy:
+          requires:
+            - build-and-push-docker-image
+          # filters:
+          #   branches:
+          #     only: master    
               
               
 #job de linting avant les tests
