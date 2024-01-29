@@ -77,11 +77,11 @@ jobs:
           command: |
             curl https://cli-assets.heroku.com/install.sh | sh
             HEROKU_API_KEY=$HEROKU_TOKEN
-            heroku config:set SECRET_KEY=$env:SECRET_KEY -a $env:HEROKU_APP_NAME
-            heroku config:set DSN=$env:DSN -a $env:HEROKU_APP_NAME
+            heroku config:set SECRET_KEY=$env:SECRET_KEY -a $env:lettingsheroku
+            heroku config:set DSN=$env:DSN -a $env:lettingsheroku
             heroku container:login
-            heroku container:push -a $env:HEROKU_APP_NAME web
-            heroku container:release -a $env:HEROKU_APP_NAME web
+            heroku container:push -a $env:lettingsheroku web
+            heroku container:release -a $env:lettingsheroku web
 
 workflows:
   test_my_app:
