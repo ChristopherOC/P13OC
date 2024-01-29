@@ -9,11 +9,6 @@ jobs:
   lint: # Ajout du job de linting
     docker:
       - image: cimg/python:3.12.0
-    environment:
-      HEROKU_TOKEN: $HEROKU_TOKEN
-      SECRET_KEY: $SECRET_KEY
-      DSN: $DSN
-      HEROKU_APP_NAME: $HEROKU_APP_NAME
     steps:
       - checkout
       - python/install-packages:
@@ -80,7 +75,6 @@ jobs:
       - run:
           name: Build and push Docker image to Heroku
           command: |
-            $env:HEROKU_API_KEY=$HEROKU_TOKEN
             heroku config:set SECRET_KEY=$env:SECRET_KEY -a $env:HEROKU_APP_NAME
             heroku config:set DSN=$env:DSN -a $env:HEROKU_APP_NAME
             heroku container:login
