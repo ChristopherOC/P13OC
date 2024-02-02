@@ -6,6 +6,8 @@
 Welcome to ReadTheDocsOCLettings's documentation!
 =================================================
 
+Voici la documentation officielle de OC-Lettings.
+
 .. toctree::
    :maxdepth: 2
    :caption: Contents:
@@ -14,7 +16,7 @@ Welcome to ReadTheDocsOCLettings's documentation!
 
 Indices and tables
 ==================
-
+* :ref:`getting started`
 * :ref:`genindex`
 * :ref:`modindex`
 * :ref:`search`
