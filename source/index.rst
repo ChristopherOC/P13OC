@@ -9,14 +9,27 @@ Welcome to ReadTheDocsOCLettings's documentation!
 Voici la documentation officielle de OC-Lettings.
 
 .. toctree::
-   :maxdepth: 2
-   :caption: Contents:
+   :caption: Introduction
+
+   chapter1
+   chapter2
+
+.. toctree::
+   :caption: Installation
+
+   chapter3
+
+.. toctree::
+   :caption: Utilisation
+
+   chapter 4
+   
+
 
 
 
 Indices and tables
 ==================
-* :ref:`getting started`
 * :ref:`genindex`
 * :ref:`modindex`
 * :ref:`search`
