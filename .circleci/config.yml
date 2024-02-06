@@ -85,6 +85,7 @@ jobs:
 workflows:
   test_my_app:
     jobs:
+      - lint
       - build_and_test
       - build-and-push-docker-image:
           requires:
