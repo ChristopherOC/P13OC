@@ -85,11 +85,11 @@ jobs:
 workflows:
   test_my_app:
     jobs:
-      - lint
       - build_and_test
       - build-and-push-docker-image:
           requires:
-            - build_and_test # only deploy if the build_and_test job has completed
+            - build_and_test
+            - lint # only deploy if the build_and_test job has completed
           filters:
             branches:
               only: master # only deploy when on main
