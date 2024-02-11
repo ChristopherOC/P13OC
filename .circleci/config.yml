@@ -1,11 +1,3 @@
-""""
-Fichier permettant de définir les jobs du pipeline CI/CD.
-le Lint vérifie la conformité du code aux bonnes pratiques.
-Build and test sert a construire et tester l'application.
-Build and Push permet de construire une image docker et de la
-poush sur un dockerhub.
-Ensuite Deploy permet de déployer l'application sur Heroku.
-""""
 version: 2.1
 orbs:
   python: circleci/python@2.0.3
