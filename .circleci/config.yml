@@ -10,8 +10,7 @@ orbs:
   python: circleci/python@2.0.3
   heroku: circleci/heroku@1.2.6
 
-
-
+ 
 jobs:
   lint: # Ajout du job de linting
     docker:

@@ -1,3 +1,8 @@
+""""
+Fichier permettant de tester les différentes
+fonctionnalités de l'application profiles
+et ses vues.
+"""
 import pytest
 from django.urls import reverse
 from django.contrib.auth.models import User
