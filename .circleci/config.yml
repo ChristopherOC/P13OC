@@ -21,7 +21,7 @@ jobs:
           paths:
             - .
 
-  build_and_test: Job permettant de construire et tester l'application
+  build_and_test: # Job permettant de construire et tester l'application
     docker:
       - image: cimg/python:3.12.0
 
