@@ -2,7 +2,6 @@ import pytest
 from django.urls import reverse
 from django.test import Client
 from letting.models import Letting, Address
-from django.http import Http404
 from pytest_django.asserts import assertTemplateUsed
 
 
@@ -64,7 +63,6 @@ class TestLettings:
         response = self.client.get(reverse('letting', args=[35]))
         assert response.status_code == 404
         assertTemplateUsed(response, '404.html')
-
 
     def test_custom_500_view(self):
         client = Client()

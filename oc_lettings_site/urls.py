@@ -1,12 +1,17 @@
 from django.contrib import admin
 from django.urls import path
-from django.conf.urls import handler404, handler500
 
 import letting.views
 import profiles.views
 
+
+"""
+Fichier contenant les différentes routes (urls)
+de l'application.
+"""
 def trigger_error(request):
     division_by_zero = 1 / 0
+
 
 urlpatterns = [
     path('', letting.views.index, name='index'),

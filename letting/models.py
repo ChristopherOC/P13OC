@@ -1,7 +1,8 @@
 from django.db import models
 from django.core.validators import MaxValueValidator, MinLengthValidator
-# Create your models here.
 
+
+# Create your models here.
 class Address(models.Model):
     # Model Adress avec spécification des champs attendus
     number = models.PositiveIntegerField(validators=[MaxValueValidator(9999)])
@@ -13,12 +14,12 @@ class Address(models.Model):
 
     def __str__(self):
         return f'{self.number} {self.street}'
-    
+
     class Meta:
         """
         Classe meta permettant une orthographe correcte
         dans le panel admin
-        """ 
+        """
         verbose_name_plural = "Adresses"
 
 

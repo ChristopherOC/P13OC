@@ -5,6 +5,7 @@ from django.test import Client
 from profiles.models import Profile
 from pytest_django.asserts import assertTemplateUsed
 
+
 @pytest.mark.django_db
 class TestProfiles:
     # Classe de tests pour les vues et les modèles de Profiles.
@@ -28,7 +29,6 @@ class TestProfiles:
                                              email="fakemail@fake.com")
         self.profile = Profile.objects.create(user=self.user, favorite_city="CityTest")
 
-    
     def test_profile_detail(self):
         # Test la vue profile.
         response = self.client.get(reverse('profile', args=["Testuser2"]))

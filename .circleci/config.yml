@@ -1,3 +1,11 @@
+""""
+Fichier permettant de définir les jobs du pipeline CI/CD.
+le Lint vérifie la conformité du code aux bonnes pratiques.
+Build and test sert a construire et tester l'application.
+Build and Push permet de construire une image docker et de la
+poush sur un dockerhub.
+Ensuite Deploy permet de déployer l'application sur Heroku.
+""""
 version: 2.1
 orbs:
   python: circleci/python@2.0.3
@@ -10,8 +18,8 @@ jobs:
     docker:
       - image: cimg/python:3.12.0
     steps:
-      - checkout
-      - python/install-packages:
+      - checkout # Récupère les fichiers du projet
+      - python/install-packages: # Installation des packages
           pkg-manager: pip
       - run:
           name: Run linting
@@ -21,7 +29,7 @@ jobs:
           paths:
             - .
 
-  build_and_test: # this can be any name you choose
+  build_and_test: Job permettant de construire et tester l'application
     docker:
       - image: cimg/python:3.12.0
 
@@ -32,16 +40,16 @@ jobs:
           pkg-manager: pip
       - run:
           name: Collect static
-          command: python manage.py collectstatic --noinput
+          command: python manage.py collectstatic --noinput # Récupère les fichiers static
       - run:
           name: Run tests
-          command: python -m pytest
+          command: python -m pytest # Fais passer les tests
       - persist_to_workspace:
           root: ~/project
           paths:
             - .
 
-  build-and-push-docker-image:
+  build-and-push-docker-image: # Job permettant de construire et de push l'image docker
     docker:
       - image: cimg/python:3.12.0
     steps:
@@ -65,7 +73,7 @@ jobs:
             echo $DOCKER_PASSWORD | docker login -u $DOCKER_USERNAME --password-stdin
             # docker push $DOCKER_USERNAME/my-image:$TAG
 
-  deploy: # this can be any name you choose
+  deploy: # Job permettant de déployer l'application
     docker:
       - image: cimg/python:3.12.0
     steps:
@@ -82,25 +90,21 @@ jobs:
             HEROKU_API_KEY=${HEROKU_KEY} heroku container:push -a ${HEROKU_APP_NAME} web
             HEROKU_API_KEY=${HEROKU_KEY} heroku container:release -a ${HEROKU_APP_NAME} web
 
-workflows:
+workflows: # Configuration du workflow et des dépendances des jobs
   test_my_app:
     jobs:
       - lint
       - build_and_test
-      - build-and-push-docker-image:
+      - build-and-push-docker-image: # Ne se déploie uniquement si le job build_and_test et le lint sont terminés
           requires:
             - build_and_test
-            - lint # only deploy if the build_and_test job has completed
+            - lint
           filters:
             branches:
-              only: master # only deploy when on main
-      - deploy:
+              only: master
+      - deploy: # Requiert que build-and-push-docker-image soit terminé pour pouvoir se déployer
           requires:
             - build-and-push-docker-image
           filters:
             branches:
               only: master    
-              
-              
-#job de linting avant les tests
-#ruff a la place de flake8
