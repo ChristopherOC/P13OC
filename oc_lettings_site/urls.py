@@ -9,9 +9,8 @@ import profiles.views
 Fichier contenant les différentes routes (urls)
 de l'application.
 """
-def trigger_error(request):
-    division_by_zero = 1 / 0
-
+# def trigger_error(request):
+#     division_by_zero = 1 / 0
 
 urlpatterns = [
     path('', letting.views.index, name='index'),
@@ -20,7 +19,7 @@ urlpatterns = [
     path('profiles/', profiles.views.profiles_index, name='profiles_index'),
     path('profiles/<str:username>/', profiles.views.profile, name='profile'),
     path('admin/', admin.site.urls),
-    path('sentry-debug/', trigger_error),
+    # path('sentry-debug/', trigger_error),
     path('custom_404/', letting.views.custom_404, name='custom_404'),
     path('error_404/', letting.views.erreur_404, name='error_404'),
     path('error_500/', letting.views.custom_500, name='custom_500')
